@@ -10,21 +10,37 @@ import { View,
 class Deck extends Component {
   constructor(props) {
     super(props);
+
+    const position = new Animated.ValueXY();
+    const panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: () => {
+
+      },
+      onPanResponderRelease: () => {
+
+      }
+
+    });
+
+    this.state = { panResponder, position, index: 0 };
+
   }
 
   renderCards() {
+  const { cardData, renderCard } = this.props;  
       
-  return this.props.cardData.map((item) => {
-    return this.props.renderCard(item);
+  return cardData.map((item) => {
+    return renderCard(item);
   });
 
   }
 
   render() {
     return(
-      <View>
+      <Animated.View>
         {this.renderCards()}
-      </View>   
+      </Animated.View>   
     );
   }
 }

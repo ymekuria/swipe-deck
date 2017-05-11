@@ -14,8 +14,8 @@ class Deck extends Component {
     const position = new Animated.ValueXY();
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: () => {
-
+      onPanResponderMove: (event, gesture) => {
+        console.log('event: ', event)
       },
       onPanResponderRelease: () => {
 
@@ -27,18 +27,32 @@ class Deck extends Component {
 
   }
 
-  renderCards() {
-  const { cardData, renderCard } = this.props;  
-      
-  return cardData.map((item) => {
-    return renderCard(item);
-  });
+  getCardStyle(){
+    const { position } = this.state;
+    const rotate = position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH * 2.0, 0, SCREEN_WIDTH * 2.0],
+      outputRange: ['-120deg', '0deg', '120deg']
+    });
 
+    return {
+      ...position.getLayout(),
+      transform: [{ rotate }]
+    }
+  }
+
+  renderCards() {
+    const { cardData, renderCard } = this.props;  
+        
+    return cardData.map((item) => {
+      return renderCard(item);
+    });
   }
 
   render() {
     return(
-      <Animated.View>
+      <Animated.View
+        {...panResponder.panHandlers}
+      >
         {this.renderCards()}
       </Animated.View>   
     );

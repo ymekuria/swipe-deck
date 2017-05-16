@@ -40,8 +40,14 @@ class Deck extends Component {
   }
 
   // swipes the card off the screen once a user drags past the threshold
-  swipeOffScreen() {
-
+  swipeOffScreen(direction) {
+    // direction argument determines which side the screen animates too
+    const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+   
+    Animated.timing(this.state.position, {
+      toValue: { x, y: 0},
+      duration: SWIPE_OUT_DURATION
+    }).start();     
   }
   
   // resets card to initial position 

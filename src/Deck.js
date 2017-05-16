@@ -3,6 +3,7 @@ import { View,
   Text,
   Animated,
   PanResponder,
+  Dimensions,
   LayoutAnimation,
   UIManager
 } from 'react-native'; 
@@ -22,22 +23,32 @@ class Deck extends Component {
         console.log('event: ', event)
         position.setValue({ x: gesture.dx, y: gesture.dy })
       },
-      onPanResponderRelease: (event, geature) => {
+      onPanResponderRelease: (event, gesture) => {
         if (gesture.dx > SWIPE_THRESHOLD) {
           console.log('swipe right');
         } else if (gesture.dx < -SWIPE_THRESHOLD) {
           console.log('swipe left');
         } else {
           // reset card to initial position
-        }
-      }          
-
+        }          
       }
 
     });
 
     this.state = { panResponder, position, index: 0 };
 
+  }
+
+  // swipes the card off the screen once a user drags past the threshold
+  swipeOffScreen() {
+
+  }
+  
+  // resets card to initial position 
+  resetCardPositon() {
+    Animated.spring(this.state.position, {
+      toValue: { x:0, y:0 }
+    }).start();
   }
 
   getCardStyle(){
@@ -64,7 +75,8 @@ class Deck extends Component {
   render() {
     return(
       <Animated.View
-        {...panResponder.panHandlers}
+        style={[this.getCardStyle()]}
+        {...this.state.panResponder.panHandlers}
       >
         {this.renderCards()}
       </Animated.View>   

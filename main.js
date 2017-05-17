@@ -9,8 +9,8 @@ import Deck from './src/Deck';
 const CARDDATA = [
   { id: 1, text: '#1', uri: 'https://unsplash.com/?photo=5EVrQKXPa5g' },
   { id: 2, text: '#2', uri: 'https://unsplash.com/?photo=2h_i_BB_X2E' },
-  { id: 3, text: '#3', uri: 'https://unsplash.com/?photo=DxAV6se7QPM' },
-  { id: 4, text: '#4', uri: 'https://unsplash.com/?photo=trvP9JiYC1E' }
+  // { id: 3, text: '#3', uri: 'https://unsplash.com/?photo=DxAV6se7QPM' },
+  // { id: 4, text: '#4', uri: 'https://unsplash.com/?photo=trvP9JiYC1E' }
 ];
 
 class App extends Component {
@@ -34,12 +34,27 @@ class App extends Component {
     );
   }
 
+  renderNoMoreCards() {
+    return (
+      <Card title="No More Cards">
+        <Text style={{ marginBottom: 10 }}>
+          We are all done here!
+        </Text>
+        <Button
+          backgroundColor="#03A9F4"
+          title="Show More"
+        />
+      </Card>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Deck 
           cardData={CARDDATA} 
           renderCard={this.renderCard}
+          renderNoMoreCards={this.renderNoMoreCards}
         />  
       </View>
     );

@@ -13,7 +13,11 @@ const SWIPE_THRESHOLD = .25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
 class Deck extends Component {
-  s
+  static defaultProps = {
+    onSwipeRight: () => {},
+    onSwipeLeft: () => {}
+  }
+
   constructor(props) {
     super(props);
 
@@ -58,8 +62,8 @@ class Deck extends Component {
   onSwipeComplete(direction) {
    
     // onSwipeRight/onSwipeLeft handlers can be defined and passed down as props to this component
-    const { onSwipeLeft, onSwipeRight, data } = this.props;
-    const item = data[this.state.topCardIndex]; // item is set to the card that was swiped
+    const { onSwipeLeft, onSwipeRight, cardData } = this.props;
+    const item = cardData[this.state.topCardIndex]; // item is set to the card that was swiped
 
     direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
     
@@ -92,10 +96,18 @@ class Deck extends Component {
 
   renderCards() {
     const { topCardIndex, panResponder } = this.state;
-    const { cardData, renderCard } = this.props;  
+    const { cardData, renderCard, renderNoMoreCards } = this.props;  
         
+    if (topCardIndex >= cardData.length) {
+      return renderNoMoreCards();
+    }
+
     return cardData.map((item, index) => {
-      // attaches animations and panresponder handlers to top card of the deck
+
+      // cards that are swiped are no longer rendered
+      if (index < topCardIndex) { return null; }
+
+      // attaches animations and panResponder handlers to top card of the deck
       if (index === topCardIndex) {
         return (
           <Animated.View 

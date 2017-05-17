@@ -35,7 +35,7 @@ class Deck extends Component {
 
     });
 
-    this.state = { panResponder, position, index: 0 };
+    this.state = { panResponder, position, topCardIndex: 0 };
 
   }
 
@@ -57,8 +57,10 @@ class Deck extends Component {
     }).start();
   }
 
-  getCardStyle(){
+  getCardStyle() {
     const { position } = this.state;
+    // this maps the animated x position of the card to a rotation degree 
+    // ie at the left edge of screen card will rotate -100deg at 0 rotation is 0
     const rotate = position.x.interpolate({
       inputRange: [-SCREEN_WIDTH * 2.0, 0, SCREEN_WIDTH * 2.0],
       outputRange: ['-120deg', '0deg', '120deg']
@@ -71,19 +73,40 @@ class Deck extends Component {
   }
 
   renderCards() {
+    const { topCardIndex, panResponder } = this.state;
     const { cardData, renderCard } = this.props;  
         
-    return cardData.map((item) => {
-      return renderCard(item);
+    return cardData.map((item, index) => {
+      // attaches animations and panresponder handlers to top card of the deck
+      if (index === topCardIndex) {
+        return (
+          <Animated.View 
+            key={item.id}
+            style={this.getCardStyle()}
+            {...panResponder.panHandlers}
+          >
+            {renderCard(item)}
+          </Animated.View>
+        );
+
+      // all other cards below the top are rendered without animation handlers  
+      return (
+        <View>
+          {renderCard(item)}
+        </View>  
+
+      );  
+
+      }
+
+
+
     });
   }
 
   render() {
     return(
-      <Animated.View
-        style={[this.getCardStyle()]}
-        {...this.state.panResponder.panHandlers}
-      >
+      <Animated.View>
         {this.renderCards()}
       </Animated.View>   
     );

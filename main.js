@@ -1,6 +1,6 @@
 import Expo from 'expo';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 import Deck from './src/Deck';
 
@@ -15,12 +15,13 @@ const CARDDATA = [
 
 class App extends Component {
 
-  renderCard(item) {
+  renderCard(item, color) {
     const { id, text, uri } = item;
 
     return (
       <Card
         key={id}
+        containerStyle={{ borderRadius: 10 }}
         title={text}
         image={{ uri }}
        >
@@ -29,14 +30,16 @@ class App extends Component {
           backgroundColor="#03A9F4"
           title="Button"  
          /> 
-
-      </Card>   
+      </Card> 
     );
   }
 
   renderNoMoreCards() {
     return (
-      <Card title="No More Cards">
+      <Card 
+        title="No More Cards"
+        containerStyle={{ borderRadius: 10 }}    
+      >
         <Text style={{ marginBottom: 10 }}>
           We are all done here!
         </Text>
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
-  },
+  }
 });
 
 Expo.registerRootComponent(App);

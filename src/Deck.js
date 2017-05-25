@@ -8,7 +8,8 @@ import { View,
   UIManager
 } from 'react-native'; 
 
-const SCREEN_WIDTH = Dimensions.get('window').width + 15;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SWIPE_THRESHOLD = .25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
@@ -48,9 +49,9 @@ class Deck extends Component {
 
   // swipes the card off the screen once a user drags past the threshold
   swipeOffScreen(direction) {
-    // direction argument determines which side of the screen the card animates too
+    // direction argument determines which side of the screen the card animates to 
     const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
-   
+
     Animated.timing(this.state.position, {
       toValue: { x, y: 0},
       duration: SWIPE_OUT_DURATION
@@ -87,6 +88,7 @@ class Deck extends Component {
       outputRange: ['-120deg', '0deg', '120deg']
     });
 
+
     return {
       ...position.getLayout(),
       transform: [{ rotate }]
@@ -96,7 +98,14 @@ class Deck extends Component {
   renderCards() {
     const { topCardIndex, panResponder } = this.state;
     const { cardData, renderCard, renderNoMoreCards } = this.props;  
-        
+
+    const color = this.state.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH * 2.0, 0, SCREEN_WIDTH * 2.0],
+      outputRange: ['red', 'white', 'green']
+    });    
+
+    
+    // shows the user that all the cards have been swiped    
     if (topCardIndex >= cardData.length) {
       return renderNoMoreCards();
     }
@@ -117,23 +126,23 @@ class Deck extends Component {
           </Animated.View>
         );
       }
-      // all other cards below the top are rendered without animation handlers  
+      // all other cards are staggered below the top card and are rendered without gesture handlers  
       return (
-        <View
+        <Animated.View
           key={item.id}
           style={[styles.cardStyle, { top: 10 * (index - topCardIndex), zIndex: -index }]}
         >
           {renderCard(item)}
-        </View>  
+        </Animated.View>  
       );  
-    });
+    }).reverse();
   }
 
   render() {
     return(
-      <Animated.View>
+      <View>
         {this.renderCards()}
-      </Animated.View>   
+      </View>   
     );
   }
 }
@@ -141,7 +150,8 @@ class Deck extends Component {
 const styles = {
   cardStyle: {
     position: 'absolute',
-    width: SCREEN_WIDTH
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT
   }
 };
 
